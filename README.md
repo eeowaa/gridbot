@@ -72,7 +72,7 @@ initial position to the enemy flag.  However, note that in the `GridBot.c`
 which I included in this repository, the robot follows my own buggy algorithm I
 wrote for this.  I chose to include my version so that I can confidently say
 that the contents of `GridBot.c` and all other included files except for those
-in the <Competitions> subdirectory were written completely by me.  You will
+in the `Competitions` subdirectory were written completely by me.  You will
 find bugs for this part when you run the simulation (which I'll explain later).
 
 Besides mentoring and leading discussions, I had at least three major
@@ -136,14 +136,16 @@ suppose can be interpreted multiple ways.
 
 I then got to work with porting over the "return-home" algorithm by hand.  I
 finally did it, and you can see the code in `GridBot.c`.  The design is briefly
-explained in <Documentation/UL_Description.pdf>.  Basically, it implements a
-dynamic branch-and-bound algorithm using a quad tree (one child node for each
-cardinal direction), trying to find the shortest path from point A to point B
-in terms of _combined number of forward steps and 90-degree turns_.  Any time
-the robot senses something different than it remembers while following the
-calculated path, it will perform the branch-and-bound search again.  If there
-is no way to get to point B from point A, the robot will [semi-]intelligently
-wall-hug the boundary in its way until it senses an opening.
+explained in
+[Documentation/UL\_Description.pdf](Documentation/UL_Description.pdf).
+Basically, it implements a dynamic branch-and-bound algorithm using a quad tree
+(one child node for each cardinal direction), trying to find the shortest path
+from point A to point B in terms of _combined number of forward steps and
+90-degree turns_.  Any time the robot senses something different than it
+remembers while following the calculated path, it will perform the
+branch-and-bound search again.  If there is no way to get to point B from point
+A, the robot will [semi-]intelligently wall-hug the boundary in its way until
+it senses an opening.
 
 ## 2. Framework Overhaul
 
@@ -225,7 +227,7 @@ more, but I didn't have the time for that unfortunately.  There was Windows
 support last year but the overhaul of testing tools would have required more
 time spent on developing portability.
 
-3. Development and Testing Tools
+## 3. Development and Testing Tools
 
 First of all, I wanted to make testing the upper-level logic of the robot
 easier this year than last.  If you run our executable from last year, you can
@@ -257,7 +259,7 @@ is going on or how to interact with the simulation**.
 
 In addition to overhauling the virtual grid simulation, I created a [build
 script](Spring2013_Code/build.sh) to speed up development.  Quoting from
-<Spring2013_Code/README.txt>:
+[Spring2013\_Code/README.txt](Spring2013_Code/README.txt):
 
 > To build GridBot.c:
 >
