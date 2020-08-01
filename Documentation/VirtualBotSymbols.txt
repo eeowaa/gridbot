@@ -1,0 +1,42 @@
+=========================
+VIRTUAL GRID SYMBOLIC KEY
+=========================
+Grid:
+    0   1   2   3   4   5
+  +###+###+###+###+###+###+
+0 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+1 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+2 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+3 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+4 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+5 #   |   |   |   |   |   #
+  +---+---+---+---+---+---+
+6 #   |   |   |   |   |   #
+  +###+###+###+###+###+###+
+
+Our Robot:
+  ^
+<   >
+  v
+
+Enemy Robot:
+*
+
+Obstacle indicators:
+Vertical    Horizontal
+?           ???         UNsensed    unblocked
+|           ---         sensed      unblocked
+B           BBB         UNsensed    blocked
+#           ###         sensed      blocked
+%           %%%         sensed      enemy robot blocking path
+NOTE: Robot cannot tell the difference between # and %
+
+Other indicators:
+F     Flag
+.     VISITED node
+NOTE: '.' only appears when 'REMEMBER_VISITED_NODES' flag is enabled

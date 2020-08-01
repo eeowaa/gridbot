@@ -1,0 +1,190 @@
+*** IMPORTANT NOTE ***
+Open this document in a plain-text text editor such as:
+ - Notepad
+ - Notepad++
+ - Visual Studio
+ - Textmate
+ - Vi or Vim
+ - Emacs
+... and make the window REALLY BIG, or you won't be able to read it.
+
+=========================================
+Proposed Pseudocode for Upper-Level Logic
+=========================================
+'>' means we still need to write this code
+'*' means the code is written, but must be incorporated into the main algorithm
+'?' means some discussion should take place here
+
+  // Initialization:
+  Initialize position to row = 0, col = 0
+  Initialize segments on edge of grid to BLOCKED so the robot is "stuck" inside grid
+
+> // Getting to the flag:
+  While not in node containing flag (i.e. !(row == 6 && col == 5))
+    // Sense:
+    Read sensors to relative FRONT, LEFT, and RIGHT of robot
+?   For each sensor that sees something in front of it (whether it is a wall or the other robot on the grid)
+      Set the boundary between floor tiles in that sensor direction to BLOCKED in robot's memory
+    EndFor
+    // Think and Move: (NOTE: all directions are absolute)
+    If facing DOWN
+      If segment to DOWN is UNBLOCKED
+        Move forward
+      Else If segment to RIGHT Is UNBLOCKED
+        Turn RIGHT
+        Move forward
+      Else
+>>>     Maneuver
+      EndIf
+    Else If facing RIGHT
+      If segment to RIGHT is UNBLOCKED
+        Move forward
+      Else If segment to DOWN is UNBLOCKED
+        Turn DOWN
+        Move forward
+      Else
+>>>     Maneuver
+      EndIf
+    EndIf
+  EndWhile
+
+  // Returning home:
+* Dynamic Branch-and-Bound Return-Home function (see separate documentation)
+
+=======
+Example
+=======
+
+NOTE: The words "relative" and "absolute" are used to explicity specify the meaning of directions in the following
+      example, but in the robot code itself, the meaning of direction is contextual.
+
++-----------------------------------+-----------------------------------+-----------------------------------+
+| The robot starts out in the TL    | Segments to the relative RIGHT,   | Once again, the robot senses, but |
+| corner. It has not sensed or      | LEFT, and FRONT of the robot are  | this time it sees a block to its  |
+| moved yet. It only knows that the | sensed, and the robot's memory is | relative FRONT, so it must turn   |
+| the edge segments of the grid are | updated. The robot then moves to  | before moving forward. Since the  |
+| virtually BLOCKED and it is       | absolute DOWN, since the robot is | bot is trying to reach the BR     |
+| trying to reach the BR corner.    | already facing that direction and | corner, turning to absolute RIGHT |
+|                                   | the segment is UNBLOCKED.         | will be beneficial. Luckily, the  |
+|                                   |                                   | segment to absolute RIGHT is      |
+|                                   |                                   | UNBLOCKED, so the bot turns that  |
+|                                   |                                   | way and moves.                    |
++-----------------------------------+-----------------------------------+-----------------------------------+
+
+        0   1   2   3   4   5               0   1   2   3   4   5               0   1   2   3   4   5
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+    0 # v ?   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+           +---+???+???+???+???+???+           +---+???+???+???+???+???+
+    1 #   ?   ?   B   ?   ?   #         1 # v ?   ?   B   ?   ?   #         1 # . | > ?   B   ?   ?   #
+      +BBB+???+???+???+???+???+           +BBB+???+???+???+???+???+           +###+???+???+???+???+???+
+    2 #   ?   ?   B   ?   ?   #  ___|\  2 #   ?   ?   B   ?   ?   #  ___|\  2 #   ?   ?   B   ?   ?   #
+      +???+???+???+???+???+???+ |     \   +???+???+???+???+???+???+ |     \   +???+???+???+???+???+???+
+    3 #   ?   ?   ?   ?   ?   # |___  / 3 #   ?   ?   ?   ?   ?   # |___  / 3 #   ?   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+     |/    +???+???+???+???+???+???+     |/    +???+???+???+???+???+???+
+    4 #   ?   ?   ?   ?   ?   #         4 #   ?   ?   ?   ?   ?   #         4 #   ?   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+           +???+???+???+???+???+???+           +???+???+???+???+???+???+
+    5 #   ?   ?   ?   ?   ?   #         5 #   ?   ?   ?   ?   ?   #         5 #   ?   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+           +???+???+???+???+???+???+           +???+???+???+???+???+???+
+    6 #   ?   ?   ?   B   ? F #         6 #   ?   ?   ?   B   ? F #         6 #   ?   ?   ?   B   ? F #
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+
+
++-----------------------------------+-----------------------------------+-----------------------------------+
+| The bot then continues to the     | Here, the bot senses a BLOCKED    | Although the bot senses a BLOCKED |
+| node in its relative FRONT with   | segment to its relative FRONT.    | segment, the segment is not in    |
+| nothing in its way.               | Since it is trying to reach the   | the bots intended path of travel, |
+|                                   | BR corner, it will prefer to turn | so the bot just records that      |
+|                                   | to absolute DOWN before moving.   | segment as BLOCKED in its memory  |
+|                                   | Luckily, the segment to absolute  | and keeps going. Note that the    |
+|                                   | DOWN is UNBLOCKED, so the bot     | bot will keep moving DOWN until   |
+|                                   | turns that way and moves.         | it reaches a BLOCKED segment.     |
++-----------------------------------+-----------------------------------+-----------------------------------+
+
+        0   1   2   3   4   5               0   1   2   3   4   5               0   1   2   3   4   5
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+    0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #
+      +---+---+???+???+???+???+           +---+---+---+???+???+???+           +---+---+---+???+???+???+
+    1 # . | . | > B   ?   ?   #         1 # . | . | . #   ?   ?   #         1 # . | . | . #   ?   ?   #
+      +###+---+???+???+???+???+           +###+---+---+???+???+???+           +###+---+---+???+???+???+
+    2 #   ?   ?   B   ?   ?   #  ___|\  2 #   ?   ? v B   ?   ?   #  ___|\  2 #   ?   | . #   ?   ?   #
+      +???+???+???+???+???+???+ |     \   +???+???+???+???+???+???+ |     \   +???+???+---+???+???+???+
+    3 #   ?   ?   ?   ?   ?   # |___  / 3 #   ?   ?   ?   ?   ?   # |___  / 3 #   ?   ? v ?   ?   ?   #
+      +???+???+???+???+???+???+     |/    +???+???+???+???+???+???+     |/    +???+???+???+???+???+???+
+    4 #   ?   ?   ?   ?   ?   #         4 #   ?   ?   ?   ?   ?   #         4 #   ?   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+           +???+???+???+???+???+???+           +???+???+???+???+???+???+
+    5 #   ?   ?   ?   ?   ?   #         5 #   ?   ?   ?   ?   ?   #         5 #   ?   ?   ?   ?   ?   #
+      +???+???+???+???+???+???+           +???+???+???+???+???+???+           +???+???+???+???+???+???+
+    6 #   ?   ?   ?   B   ? F #         6 #   ?   ?   ?   B   ? F #         6 #   ?   ?   ?   B   ? F #
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+
+
++-----------------------------------+-----------------------------------+-----------------------------------+
+| The bot continues to advance to   | The robot is facing absolute DOWN | Here, the robot is facing absol-  |
+| absolute DOWN with nothing in its | and sees a BLOCKED segment in its | ute RIGHT and sees a BLOCKED seg- |
+| way, updating its memory of       | way, so it wants to turn to       | ment to its relative FRONT, so it |
+| segments (either BLOCKED or       | absolute RIGHT and move. It can,  | wants to turn to absolute DOWN    |
+| UNBLOCKED) after sensor reads.    | so it does.                       | before moving, according to the   |
+|                                   |                                   | algorithm. However, the segment   |
+|                                   |                                   | to absolute DOWN is BLOCKED       |
+|                                   |                                   | (obviously because it's the edge  |
+|                                   |                                   | of the grid in this case), so the |
+|                                   |                                   | bot must either go to absolute UP |
+|                                   |                                   | or LEFT, which are both usually   |
+|                                   |                                   | counter-productive directions.    |
+|                                   |                                   | ***The decision-making process is |
+|                                   |                                   | not yet formalized for this       |
+|                                   |                                   | scenario.*** However, the bot is  |
+|                                   |                                   | should go UP in this example.     |
++-----------------------------------+-----------------------------------+-----------------------------------+
+
+        0   1   2   3   4   5               0   1   2   3   4   5               0   1   2   3   4   5
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+    0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #
+      +---+---+---+???+???+???+           +---+---+---+???+???+???+           +---+---+---+???+???+???+
+    1 # . | . | . #   ?   ?   #         1 # . | . | . #   ?   ?   #         1 # . | . | . #   ?   ?   #
+      +###+---+---+???+???+???+           +###+---+---+???+???+???+           +###+---+---+???+???+???+
+    2 #   ?   | . #   ?   ?   #  ___|\  2 #   ?   | . #   ?   ?   #  ___|\  2 #   ?   | . #   ?   ?   #
+      +???+???+---+???+???+???+ |     \   +???+???+---+???+???+???+ |     \   +???+???+---+???+???+???+
+    3 #   ?   | . |   ?   ?   # |___  / 3 #   ?   | . |   ?   ?   # |___  / 3 #   ?   | . |   ?   ?   #
+      +???+???+---+???+???+???+     |/    +???+???+---+???+???+???+     |/    +???+???+---+???+???+???+
+    4 #   ?   | . |   ?   ?   #         4 #   ?   | . |   ?   ?   #         4 #   ?   | . |   ?   ?   #
+      +???+???+---+???+???+???+           +???+???+---+???+???+???+           +???+???+---+???+???+???+
+    5 #   ?   | . |   ?   ?   #         5 #   ?   | . |   ?   ?   #         5 #   ?   | . | ^ ?   ?   #
+      +???+???+---+???+???+???+           +???+???+---+???+???+???+           +???+???+---+---+???+???+
+    6 #   ?   ? v ?   B   ? F #         6 #   ?   | . | > B   ? F #         6 #   ?   | . | . #   ? F #
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+
+
++-----------------------------------+-----------------------------------+-----------------------------------+
+| When facing absolute UP, the bot  | Rather than try to "wrap around"  | The bot sees a BLOCKED segment to |
+| will try to move to the absolute  | to the other side of the obsta-   | its relative FRONT and an         |
+| RIGHT to get back on track. (And  | cle, the bot will continue to     | UNBLOCKED segment to its absolute |
+| when facing LEFT, it will try to  | move to the absolute RIGHT until  | DOWN, so it turns to absolute     |
+| go DOWN.) Here, the bot has found | it encounters another BLOCKED     | DOWN and moves forward into the   |
+| an opening to the absolute RIGHT, | segment to its relative FRONT.    | node containing the flag.         |
+| so it takes it.                   |                                   |                                   |
++-----------------------------------+-----------------------------------+-----------------------------------+
+
+        0   1   2   3   4   5               0   1   2   3   4   5               0   1   2   3   4   5
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+    0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #         0 # . |   ?   ?   ?   ?   #
+      +---+---+---+???+???+???+           +---+---+---+???+???+???+           +---+---+---+???+???+???+
+    1 # . | . | . #   ?   ?   #         1 # . | . | . #   ?   ?   #         1 # . | . | . #   ?   ?   #
+      +###+---+---+???+???+???+           +###+---+---+???+???+???+           +###+---+---+???+???+???+
+    2 #   ?   | . #   ?   ?   #  ___|\  2 #   ?   | . #   ?   ?   #  ___|\  2 #   ?   | . #   ?   ?   #
+      +???+???+---+???+???+???+ |     \   +???+???+---+???+???+???+ |     \   +???+???+---+???+???+???+
+    3 #   ?   | . |   ?   ?   # |___  / 3 #   ?   | . |   ?   ?   # |___  / 3 #   ?   | . |   ?   ?   #
+      +???+???+---+???+???+???+     |/    +???+???+---+???+???+???+     |/    +???+???+---+???+???+???+
+    4 #   ?   | . |   ?   ?   #         4 #   ?   | . |   ?   ?   #         4 #   ?   | . |   ?   ?   #
+      +???+???+---+---+???+???+           +???+???+---+---+---+???+           +???+???+---+---+---+---+
+    5 #   ?   | . | . | > ?   #         5 #   ?   | . | . | . | > #         5 #   ?   | . | . | . | . #
+      +???+???+---+---+???+???+           +???+???+---+---+---+???+           +???+???+---+---+---+---+
+    6 #   ?   | . | . #   ? F #         6 #   ?   | . | . #   ? F #         6 #   ?   | . | . #   ? v #
+      +###+###+###+###+###+###+           +###+###+###+###+###+###+           +###+###+###+###+###+###+
+
+What comes next?
+1. Capture the flag
+2. Sense its surroundings at current node
+3. Return home
+Note that although the robot has not visited nodes (0,1), (2,1), (4,3) and (6,1), all of those nodes could
+  potentially be in the optimal path calculated by the return-home algorithm.

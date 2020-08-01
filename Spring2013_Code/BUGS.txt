@@ -1,0 +1,50 @@
+CRITICAL {{{
+
+=====
+Bug 1
+=====
+The 'wallHugUntil' function is extremely dangerous when the enemy robot is around
+- Results in "washing machine" behavior (i.e. the robot gets stuck tracing
+  a 4-node circular path)
+
+=====
+Bug 3
+=====
+Robot recalculates path home as it travels along the edge of the grid (any of the
+four edges)
+
+}}}
+HIGH {{{
+
+=====
+Bug 5
+=====
+Robot doesn't always choose the path with the fewest number of turns (ex: when robot goes up
+right side and along top, it avoids the top-right-most space even though it could use it,
+thus adding an extra turn)
+
+=====
+Bug 6
+=====
+Cannot open, save, and save as test files. This can be fixed by reading in '\b' characters
+from console and deciding what to do with it (likewise for other operators like '\n').
+
+}}}
+MEDIUM {{{
+
+=====
+Bug 7
+=====
+Does not react smartly to blocks two spaces in front (will willing go toward these
+blocks). Can fix by adding a heuristic to avoid blocks at certain times in fear that
+they are the enemy robot.
+
+}}}
+LOW {{{
+
+=====
+Bug 8
+=====
+Virtual Grid does not work on Windows
+
+}}}

@@ -1,0 +1,60 @@
+# New stuff to add to UL part of robot for this year
+
+- Always re-check segments in memory that are BLOCKED.
+    - If a previously blocked segment is sensed as being UNBLOCKED, then treat it as such
+    - Perform recalculations as necessary
+        - NOTE: the same calculation algorithms will be used in path-planning
+          ==> No new code for those algorithms
+- If we get blocked completely (i.e. surrounded by BLOCKED segments)
+    - Move along the edge of the "prison" (LOOK! NEW TERMINOLOGY!), until we find
+      an opening.  Note that there will always be an opening, and if there isn't, we just
+      need to keep looking.
+        - DO NOT look along the edges of the grid.
+    - NEW CODE:
+        - Recognizing when we are inside of a prison
+        - Once we know we're trapped ==> "Prison Escape Algorithm":
+        1. Fence = edge of the prison, not including outer boundary of grid (composed of segments)
+        2. Path = nodes beside fence inside prison
+            - path is a linked list
+            - it is ordered (0..n) with the 0th node at one end and the nth node at the other
+        3. While not at end of path
+            3.1 If adjacent segment(s) of fence is/are blocked
+                3.1.1 Move to next node in path
+            3.2 Else (we sense an opening)
+                3.2.1 Move to node on other side of fence (take the first opening)
+                3.2.2 Break out of algorithm and resume zig-zag to lower-right corner (FINISHED)
+        4. Here, we'll have reached the end of the path
+            4.1 Swap each ListNode->next with ListNode->prev (see code below for ListNode type)
+                NOTE: In effect, this just reverses the list
+            4.2 Go back to step 3
+        (END OF ALGORITHM -- only break point is 3.2.2)
+- Change the code to keep the robot within the bounds of the grid.
+    - Right now, the edges of the grid are just represented as BLOCKED segments.
+    - Actually, we do not need to change the representation of the BLOCKED outer
+      segments.
+      ==> Instead, we need to just *ignore* the outside. We may or may not actually
+          read from our sensors along the outside border of the grid. From an upper-level
+          standpoint, it won't matter (from a lower-level standpoint, it will save
+          some time by reading from fewer sensors -- probably negligible).
+- Zig-zag path planning
+    - VERY GENERAL idea
+        - Start at upper-left corner, facing DOWN
+        - Move forward until the robot has encountered an obstacle
+        - Turn RIGHT
+        - Move forward until the robot has encountered an obstacle
+        - Turn DOWN
+        - Etc
+    - TODO:
+        - Expand algorithm to account for cases where we cannot make the desired movements
+        - Write more formalized pseudocode (e.g. the "prison escape" pseudocode)
+
+BIG NOTE:
+- We may not want to create a list of nodes in a path to follow.
+- Rather, we might want to create a list of segments which is the fence.
+- We could then initiate an edge-following routine (which is already written), to try to get to the other side
+    - We will then need to write code to determine when we are on the other side.
+        - We could say: when we sense that one of the segments in the fence in UNBLOCKED
+            - We move across the segment
+            - We break out of the edge-following routine
+            - We re-initiate the "zig-zag" routine to get to the bottom-right corner
+- We also may be able to get by without the "Prison" abstraction if our Zig-Zag routine is good enough.

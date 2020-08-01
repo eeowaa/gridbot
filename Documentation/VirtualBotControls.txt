@@ -1,0 +1,44 @@
+NOTE:
+- Both Method 1 and Method 2 keybindings are always active.
+  You may use any combination of these keys you like.
+- For the actions 'Move Cursor' and 'Move Enemy Robot',
+  Method 1 keybindings will be familiar to PC gamers and
+  Method 2 keybindings will be familiar to Vi[m] users
+
+=====================
+'SETUP MODE' CONTROLS
+=====================
+
+Action      Method 1   Method 2
+------      -------------------
+
+Move           w          k
+Cursor       a   d      h   l
+               s          j
+
+Switch         f          n
+Horiz/Vert
+
+Toggle
+Placement    ENTER      SPACE
+of Block
+
+Start          q        <N/A>
+Test Mode
+
+====================
+'TEST MODE' CONTROLS
+====================
+
+Action      Method 1   Method 2
+------      -------------------
+
+Move           w          k
+Enemy        a   d      h   l
+Robot          s          j
+
+Advance      ENTER      SPACE
+Our Robot
+
+Exit Prgm      q        <N/A>
+
