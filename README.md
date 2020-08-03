@@ -268,7 +268,7 @@ script](Spring2013_Code/build.sh) to speed up development.  Quoting from
 > The build will output two executable files:
 >
 >     1. AVRBot:     executable to be run on AVR microcontroller
->     2. VirtualBot:  executable to be run in \*nix shell
+>     2. VirtualBot: executable to be run in Unix shell
 >
 > The build will also print the size of AVRBot and VirtualBot to standout output.
 
