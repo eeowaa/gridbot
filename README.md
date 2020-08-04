@@ -13,8 +13,9 @@ competition rules](Competition/MICS_2013.pdf), the software framework developed
 in Spring 2012 would prove to be useful in the 2013 competition, since the
 physical competition environment was the same.  I've included an old [Linux
 executable file](Misc/GridBot_Spring2012) demonstrating the upper-level logic
-from last year so you can see how it worked.  You can select from tests 1-7
-when prompted.  Test 6 showcases a bug if you're interested in seeing one.
+from 2012 so you can see how it worked, but the code itself is absent.  You
+can select from tests 1-7 when prompted.  Test 6 showcases a bug if you're
+interested in seeing one.
 
 ## Summer 2012
 
